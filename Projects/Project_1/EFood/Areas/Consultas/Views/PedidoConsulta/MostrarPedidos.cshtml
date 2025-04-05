@@ -1,0 +1,85 @@
+﻿@model EFood.Modelos.ViewModels.MostrarPedidosVM
+@{
+    ViewData["Title"] = "Pedidos Orden";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2 class="text-primary">Pedidos la Orden Numero: @Model.NumeroOrden del Cliente: @Model.NombreUsuario </h2>
+    </div>
+</div>
+
+<br />
+
+<div class="p-4 border rounded bg-light">
+    @if (Model.OrdenesDetalles.Count > 0)
+    {
+        <table class="table table-responsive table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Producto</th>
+                    <th>Tipo Precio</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach (var ordenDetalle in Model.OrdenesDetalles)
+                {
+                    <tr>
+                        <td>@ordenDetalle.GetValue(0)</td> <!-- Nombre Producto -->
+                        <td>@ordenDetalle.GetValue(1)</td> <!-- Tipo Precio -->
+                        <td>@ordenDetalle.GetValue(2)</td> <!-- Precio -->
+                        <td>@ordenDetalle.GetValue(3)</td> <!-- Cantidad -->
+                        <td>@ordenDetalle.GetValue(4)</td> <!-- Subtotal -->
+                        <td>
+                            <!-- Botón Eliminar -->
+                            @{
+                                var ordenDetalleId = @ordenDetalle.GetValue(5);
+                                var ordenId = @ordenDetalle.GetValue(6);
+                            }
+                            <button class="btn btn-danger text-white bi bi-trash3-fill" onclick="eliminarPedido('@ordenDetalleId', '@ordenId')">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No hay Pedidos disponibles.</p>
+    }
+    <a asp-action="Index" class="btn btn-success"> <i class="bi bi-arrow-return-left"></i> Regresar </a>
+</div>
+
+<script>
+    function eliminarPedido(ordenDetalleId, ordenId) {
+        var url = '/Consultas/PedidoConsulta/EliminarPedido/' + ordenDetalleId;
+
+        swal({
+            title: "¿Está seguro de eliminar el pedido?",
+            text: "Este registro no se podrá recuperar",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+        }).then((borrar) => {
+            if (borrar) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    success: function () {
+                      
+                            window.location.href = "/Consultas/PedidoConsulta/MostrarPedidos/" + ordenId;
+                        
+                    }
+                });
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,86 @@
+﻿@model SistemaInventarioV6.Modelos.ViewModels.ProcessorCardVM
+@{
+    ViewData["Title"] = "Insert";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">Asignar tarjeta a procesador de pago</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Procesador de pago</label>
+                                <select asp-for="ProcessorCard.ProcessorId" asp-items="@Model.ProcessorList" class="form-select" id="processorId">
+                                <option disabled selected>--Seleccione un procesador de pago--</option>
+                            </select>
+                                <span asp-validation-for="ProcessorCard.ProcessorId" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Tarjeta</label>
+                                <select asp-for="ProcessorCard.CardId" asp-items="@Model.CardList" class="form-select" id="cardId">
+                                <option disabled selected>--Seleccione una tarjeta--</option>
+                            </select>
+                                <span asp-validation-for="ProcessorCard.CardId" class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                       <partial name="_BotonesCrearYRegresar" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        document.getElementById("processorId").addEventListener('change', function () {
+            validarRepetidos();
+        });
+
+        document.getElementById("cardId").addEventListener('change', function () {
+            validarRepetidos();
+        });
+
+        function validarRepetidos() {
+            var url = '@Url.Content("~/")' + "Admin/ProcessorCard/ValidarRepetidos";
+            var processorId = '#processorId';
+            var cardId = '#cardId';
+
+            $.getJSON(url, { processorId: $(processorId).val(), cardId: $(cardId).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var processorId = document.getElementById("processorId");
+                        var cardId = document.getElementById("cardId");
+                        swal("Error", "Procesador y tarjeta ya están asociados", "error");
+                        processorId.value = "--Seleccione un procesador de pago--";
+                        cardId.value = "--Seleccione una tarjeta--";
+                    }
+                    
+                });
+            })
+
+        }
+    </script>
+}

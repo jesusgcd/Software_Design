@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2 class="text-primary">Lista de Procesadores de Pago</h2>
+    </div>
+    <div class="col-lg-6 text-center">
+        <a class="btn btn-outline-primary" asp-action="Upsert"> <i class="bi bi-plus-square-fill"></i> Crear procesador de pago </a>
+        <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="ProcessorCard" asp-action="Index"> <i class="bi bi-credit-card-2-back-fill"></i> Ver tarjetas asignadas</a>
+    </div>
+</div>
+
+<br />
+
+<div class="p-4 border rounded bg-light">
+    <table id="tblDatos" class="table table-responsive table-hover display nowrap" cellspacing="0" width="100%">
+        <thead class="table-dark">
+            <tr>
+                <th>Código</th>
+                <th>Procesador</th>
+                <th>Tipo</th>
+                <th>Activo</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/paymentProcessor.js"></script>
+}
+

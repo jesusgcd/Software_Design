@@ -1,0 +1,125 @@
+﻿@model SistemaInventarioV6.Modelos.ViewModels.ShoppingCartVM
+@{
+    ViewData["Title"] = "Detalles tarjeta";
+}
+<form method="post">
+    <input hidden asp-for="Order.ClientName" />
+    <input hidden asp-for="Order.ClientSurname" />
+    <input hidden asp-for="Order.PhoneNumber" />
+    <input hidden asp-for="Order.Address" />
+    <input hidden asp-for="Order.PaymentMethod" />
+    <input hidden asp-for="Order.DiscountCode" />
+    <input hidden asp-for="Order.Subtotal" />
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 row">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Detalles de la tarjeta
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-12 col-lg-6 pb-4">
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Tarjeta</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <select asp-for="CardVM.CardId" asp-items="@Model.CardList" class="form-select" id="cardId">
+                                            <option disabled selected>--Seleccione una tarjeta--</option>
+                                        </select>
+                                        <span asp-validation-for="CardVM.CardId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Número</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="CardVM.CardNumber" type="text" class="form-control" placeholder="Número de tarjeta" />
+                                        <span asp-validation-for="CardVM.CardNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>CVV</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="CardVM.CVV" type="text" class="form-control" placeholder="CVV de la tarjeta" />
+                                        <span asp-validation-for="CardVM.CVV" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Mes de vencimiento</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="CardVM.ExpMonth" type="text" class="form-control" placeholder="Mes de vencimiento de la tarjeta" />
+                                        <span asp-validation-for="CardVM.ExpMonth" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Año de vencimiento</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="CardVM.ExpYear" type="text" class="form-control" placeholder="Año de vencimiento de la tarjeta" />
+                                        <span asp-validation-for="CardVM.ExpYear" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1 justify-content-center">
+                                    <div class="col-12">
+                                        <div class="d-grid gap-2 d-md-block text-center">
+                                            <a asp-area="Cliente" asp-controller="ShoppingCart" asp-action="Continue" class="btn btn-outline-primary">Regresar</a>
+                                            <button type="submit" class="btn btn-success">Continuar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                var selectedAction = "@Url.Action("ConfirmOrder", "ShoppingCart", new { area = "Cliente" })";
+                $(this).attr('action', selectedAction);
+            });
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.getElementById("cardId").addEventListener('change', function () {
+            validarTarjeta();
+        });
+
+        function validarTarjeta() {
+            var url = '@Url.Content("~/")' + "Cliente/ShoppingCart/ValidarTarjeta";
+            var cardId = '#cardId';
+            $.getJSON(url, { cardId: $(cardId).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var cardId = document.getElementById("cardId");
+                        swal("Error", "El procesador de pago no permite esta tarjeta", "error");
+                        cardId.value = "--Seleccione una tarjeta--";
+                    }
+                });
+            })
+
+        }
+    </script>
+}

@@ -1,0 +1,61 @@
+﻿@model EFood.Modelos.ViewModels.ConsultarProductosVM
+
+@{
+    ViewData["Title"] = "Consultar Productos por Línea";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h2 class="text-primary">Consultar Productos por Línea de Comida</h2>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="BuscarProductos" method="post">
+            <div class="col-md-6">
+                <label>LineaComida</label>
+                <select asp-for="LineaComidaId" asp-items="@Model.LineaComidaLista" class="form-select">
+                    <option disabled selected>-- Seleccione una Linea Comida --</option>
+                </select>
+                <span asp-validation-for="LineaComidaId" class="text-danger"></span>
+                <button type="submit" class="btn btn-primary">Consultar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<br />
+
+<div class="p-3 border rounded bg-light text-center">
+    <table id="tblProductos" class="table table-responsive table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Precios</th>
+            </tr>
+        </thead>
+            @if (Model.ListaProductos != null)
+            {
+                @foreach (var producto in Model.ListaProductos)
+                {
+                    <tr>
+                        <td>@producto.GetValue(0)</td> <!-- Código -->
+                        <td>@producto.GetValue(1)</td> <!-- Nombre -->
+                        <td>@producto.GetValue(2)</td> <!-- Precio -->
+                    </tr>
+                }
+            }
+            else
+			{
+				<tr>
+                    <td colspan="3">@Model.MensajeError</td>
+				</tr>
+			}  
+    </table>
+</div>

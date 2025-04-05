@@ -1,0 +1,70 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Filtrar por fecha";
+}
+
+<form method="post" onsubmit="return validarFechas()">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Fecha Inicio</label>
+                            <input type="date" id="fechaInicio" name="fechaInicio" required>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Fecha Final</label>
+                                <input type="date" id="fechaFin" name="fechaFinal" placeholder="dd-mm-yyyy" required>
+                            </div>
+                        </div>
+                    <br />
+                    <div>
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-funnel-fill"></i>Filtrar</button>
+                            <a asp-action="Index" class="btn btn-success "><i class="bi bi-arrow-return-left"></i> Regresar</a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        
+    </div>
+
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function validarFechas() {
+            var fechaI = document.getElementById("fechaInicio").value;
+            var fechaF = document.getElementById("fechaFinal").value;
+            if(!Date.parse(fechaI) || !Date.parse(fechaF)){
+                swal("Error", "Fecha invalida", "error");
+                return false;
+            }
+
+            var fechaIObj = new Date(fechaI);
+            var fechaFObj = new Date(fechaF);
+
+            if(fechaIObj>fechaFObj){
+                swal("Error", "Fecha inicio debe ser menor a fecha final", "error");
+                return false;
+            }
+            return true;
+        }
+
+
+    </script>
+    }

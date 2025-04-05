@@ -1,0 +1,95 @@
+﻿@model EFood.Modelos.Usuario
+@using EFood.Utilidades
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Editar rol";
+}
+
+<form method="post">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+        <input type="hidden" asp-for="Id" id="id" />
+        <input type="hidden" asp-for="Role" id="role" />
+
+
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Usuario</label>
+                <input type="text" class="form-control" value="@Model.UserName" readonly />
+            </div>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Nombre</label>
+                <input type="text" class="form-control" value="@Model.Nombre" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Apellidos</label>
+                <input type="text" class="form-control" value="@Model.Apellidos" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Pregunta Seguridad</label>
+                <input type="text" class="form-control" value="@Model.PreguntaSeguridad" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Respuesta Seguridad</label>
+                <input type="text" class="form-control" value="@Model.RespuestaSeguridad" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Rol Actual</label>
+                <input type="text" class="form-control" value="@Model.Role" readonly />
+            </div>
+        </div>
+        @*
+        <div class="row mb-2">
+            <div class="form-group col-md-6">
+                <label for="roleNuevo">Otro Valor</label>
+                <select name="otroValor" class="form-control">
+                    <option value="Opcion1">Opción 1</option>
+                    <option value="Opcion2">Opción 2</option>
+                    <option value="Opcion3">Opción 3</option>
+                </select>
+            </div>
+        </div>
+        *@
+        <div class="row mb-2">
+            <div class="form-group col-md-6">
+                <label for="rolNuevo">Rol Nuevo</label>
+                <select name="rolNuevo" class="form-control">
+                    @if (User.IsInRole(DS.Role_Admin)){
+                        <option value="Admin">Admin</option>
+                    }
+                    <option value="Seguridad">Seguridad</option>
+                    <option value="Consulta">Consulta</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                </select>
+            </div>
+        </div>
+
+        
+        <br />
+        @* boton de actualizar y regresar *@
+        <div class="d-grid gap-2 d-md-block">
+            <button type="submit" class="btn btn-primary" onfocus="false" asp-route-id="@Model">  <i class="bi bi-pencil-square"></i> Guardar Cambios </button>
+            <a asp-action="Index" class="btn btn-success"> <i class="bi bi-arrow-return-left"></i> Regresar </a>
+        </div>
+
+    </div>
+
+
+</form>

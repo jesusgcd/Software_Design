@@ -1,0 +1,99 @@
+﻿@model EFood.Modelos.ViewModels.PedidoConsultaVM
+@using EFood.Utilidades
+
+
+@{
+	ViewData["Title"] = "Consultar Pedidos";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-lg-12">
+        <h2 class="text-primary">Consulta Pedidos</h2>
+    </div>
+</div>
+
+<br />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="filtrarPedidoFechaEstado" method="post">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-4">
+                    <label for="fechaInicio" class="col-form-label">Fecha Inicio</label>
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" required />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="fechaFin" class="col-form-label">Fecha Fin</label>
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" required />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="estadoSeleccionado" class="col-form-label">Seleccione el estado de la orden:</label>
+                    <select asp-for="EstadoSeleccionado" class="form-control" required>
+                        <option value="">-- Seleccione un estado --</option>
+                        <option value="@DS.EstadoAprobado">@DS.EstadoAprobado</option>
+                        <option value="@DS.EstadoProcesado">@DS.EstadoProcesado</option>
+                        <option value="@DS.EstadoEnCurso">@DS.EstadoEnCurso</option>
+                    </select>
+                    <span asp-validation-for="EstadoSeleccionado" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-2">
+                    <button type="submit" class="btn btn-primary">Consultar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+
+<div class="p-4 border rounded bg-light">
+    <table id="tblDatos" class="table table-responsive table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Numero Orden</th>
+                <th>Fecha y Hora</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                @if (Model.EstadoSeleccionado == DS.EstadoEnCurso)
+                {
+                    <th>Opciones</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ListaPedidos != null)
+            {
+                @foreach (var pedido in Model.ListaPedidos)
+                {
+                    <tr>
+                        <td>@pedido.GetValue(0)</td> <!-- Numero Orden 'id' -->
+                        <td>@pedido.GetValue(1)</td> <!-- Fecha -->
+                        <td>@pedido.GetValue(2)</td> <!-- Monto -->
+                        <td>@pedido.GetValue(3)</td> <!-- Estado -->
+                        @if (Model.EstadoSeleccionado == DS.EstadoEnCurso)
+                        {
+                            <td>
+                                @{
+                                    var ordenId = @pedido.GetValue(0).ToString();
+                                }
+                                <a href="/Consultas/PedidoConsulta/MostrarPedidos/@pedido.GetValue(0).ToString()" class="btn btn-success text-white" style="cursor:pointer">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="text-center" colspan="4">@Model.mensajeError</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

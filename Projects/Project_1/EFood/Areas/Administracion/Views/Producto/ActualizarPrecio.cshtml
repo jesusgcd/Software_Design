@@ -1,0 +1,65 @@
+﻿@model EFood.Modelos.ViewModels.ActualizarPrecioVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Actualizar Precio";
+}
+
+<form asp-action="ActualizarPrecio" method="post">
+    <div style="padding-left: 15%; padding-right: 15%; padding-bottom: 1.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+
+        <input type="hidden" asp-for="ProductoId" />
+        <input type="hidden" asp-for="PrecioId" />
+
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+
+            <div class="row mb-2 mt-2">
+                <div class="form-group col-md-6">
+                    <label>Código del Precio</label>
+                    <input type="text" class="form-control" value="@Model.PrecioId" readonly />
+                </div>
+            </div>
+
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label asp-for="nombreTipoPrecio"></label>
+                <input asp-for="nombreTipoPrecio" class="form-control" readonly />
+            </div>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label asp-for="Valor"></label>
+                <input asp-for="Valor" class="form-control" placeholder="Ingrese el valor del precio" />
+                <small class="text-muted">Ingrese el valor del precio.</small>
+                <span asp-validation-for="Valor" class="text-danger"></span>
+            </div>
+        </div>
+
+        <br />
+        <div class="d-grid gap-2 d-md-block">
+            <button type="submit" class="btn btn-primary" onfocus="false">
+                <i class="bi bi-plus-square-fill"></i> Actualizar
+            </button>
+            <a asp-action="MostrarPrecios" asp-route-id="@Model.ProductoId" class="btn btn-success">
+                <i class="bi bi-arrow-return-left"></i> Regresar
+            </a>
+        </div>
+
+        <div class="text-center mt-3">
+            <span asp-validation-summary="ModelOnly" class="text-danger">
+                <h2 class="text-danger">@Model.mensajeError</h2>
+            </span>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

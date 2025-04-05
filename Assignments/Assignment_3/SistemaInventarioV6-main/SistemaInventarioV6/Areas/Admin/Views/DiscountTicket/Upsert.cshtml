@@ -1,0 +1,97 @@
+﻿@model SistemaInventarioV6.Modelos.DiscountTicket
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear tiquete de descuento";
+}
+
+<form method="post">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+
+        @if (Model.ID != 0)
+        {
+            // Actualizar
+            titulo = "Actualizar tiquete de descuento";
+            <input type="hidden" asp-for="ID" id="id" />
+        }
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Código</label>
+                <input type="text" asp-for="Code" class="form-control" placeholder="Código del tiquete" id="code" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Nombre</label>
+                <input type="text" asp-for="Name" class="form-control" placeholder="Nombre del tiquete" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Disponibles</label>
+                <input type="text" asp-for="Stock" class="form-control" placeholder="Cantidad de tiquetes disponibles"/>
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Descuento</label>
+                <input type="text" asp-for="Percentage" class="form-control" placeholder="Porcentaje de descuento" />
+                <span asp-validation-for="Percentage" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <div>
+            @if (Model.ID != 0)
+            {
+                <partial name="_BotonesActualizarYRegresar" model="Model.ID" />
+            }
+            else
+            {
+                <partial name="_BotonesCrearYRegresar" />
+            }
+        </div>
+
+    </div>
+
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.getElementById("code").addEventListener('change', function () {
+            validarNombre();
+        });
+
+        function validarNombre() {
+            var url = '@Url.Content("~/")' + "Admin/DiscountTicket/ValidarCodigo";
+            var id = '#id';
+            var code = '#code';
+
+            $.getJSON(url, { id: $(id).val(), code: $(code).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var code = document.getElementById("code");
+                        swal("Error", "Código ya existe", "error");
+                        code.value = "";
+                    }
+                });
+            })
+
+        }
+    </script>
+
+}
+

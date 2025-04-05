@@ -1,0 +1,114 @@
+﻿@model EFood.Modelos.ViewModels.ProcesadorPagoVM
+@using EFood.Utilidades
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear Nuevo Procesador de Pago";
+}
+
+
+<form method="post" enctype="multipart/form-data">
+    @if (Model.ProcesadorPago.Id != 0)
+    {
+        titulo = "Editar Procesador de Pago";
+        <input asp-for="ProcesadorPago.Id" hidden />
+    }
+    <div class="border p-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <h2 class="text-info">@titulo</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Nombre</label>
+                            <input asp-for="ProcesadorPago.Nombre" class="form-control" />
+                            <span asp-validation-for="ProcesadorPago.Nombre" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="requiereverificacion">Requiere Verificacion</label>
+                            <select asp-for="ProcesadorPago.RequiereVerificacion" class="form-control" id="requiereverificacion">
+                                <option value="true">Si</option>
+                                <option value="false">No</option>
+                            </select>
+                            <span asp-validation-for="ProcesadorPago.RequiereVerificacion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Metodo de Verificación</label>
+                            <input asp-for="ProcesadorPago.MetodoVerificacion" class="form-control" />
+                            <span asp-validation-for="ProcesadorPago.MetodoVerificacion" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="estado">Estado</label>
+                            <select asp-for="ProcesadorPago.Estado" class="form-control" id="estado">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                            <span asp-validation-for="ProcesadorPago.Estado" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Pasarela de Pago</label>
+                            <input asp-for="ProcesadorPago.PasarelaPago" class="form-control" />
+                            <span asp-validation-for="ProcesadorPago.PasarelaPago" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Metodo de Pago</label>
+                            <select asp-for="ProcesadorPago.MetodoPagoId" asp-items="@Model.MetodoPagoLista" class="form-select">
+                                <option disabled selected>-- Seleccione un Procesador de Pago --</option>
+                            </select>
+                            <span asp-validation-for="ProcesadorPago.MetodoPago" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="text-center mt-3">
+                        <span asp-validation-summary="ModelOnly" class="text-danger">
+                            <h2 class="text-danger">@Model.mensajeError</h2>
+                        </span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-block">
+                        @if (Model.ProcesadorPago.Id != 0)
+                        {
+                            <partial name="_BotonesActualizarYRegresar" model="Model.ProcesadorPago.Id" />
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-plus-square-fill"></i> Crear</button>
+                            <a asp-action="Index" class="btn btn-success "><i class="bi bi-arrow-return-left"></i> Regresar</a>
+                        }
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

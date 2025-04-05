@@ -1,0 +1,171 @@
+﻿@model SistemaInventarioV6.Modelos.PaymentProcessor
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear Procesador de Pago";
+}
+
+<form method="post">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+
+        @if (Model.ID != 0)
+        {
+            // Actualizar
+            titulo = "Actualizar Procesador de Pago";
+            <input type="hidden" asp-for="ID" id="id" />
+        }
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Código</label>
+                <input type="text" asp-for="Code" class="form-control" placeholder="Código" id="code" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Procesador</label>
+                <input type="text" asp-for="Processor" class="form-control" placeholder="Procesador" />
+                <span asp-validation-for="Processor" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Nombre</label>
+                <input type="text" asp-for="Name" class="form-control" placeholder="Nombre" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Tipo</label>
+                <select asp-for="Type" class="form-control" id="type">
+                    <option disabled selected>--Seleccione un tipo--</option>
+                    <option value="Tarjeta">Tarjeta de crédito o débito</option>
+                    <option value="Cheque">Cheque electrónico</option>
+                    <option value="Efectivo">Efectivo</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Estado</label>
+                <select asp-for="Status" class="form-select" id="status">
+                    <option value=false>Inactivo</option>
+                    <option value=true>Activo</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Require verificación</label>
+                <select asp-for="Verification" class="form-select">
+                    <option value=false>No</option>
+                    <option value=true>Sí</option>
+                </select>
+                <span asp-validation-for="Verification" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Método</label>
+                <input type="text" asp-for="Method" class="form-control" placeholder="Método" />
+                <span asp-validation-for="Method" class="text-danger"></span>
+            </div>
+        </div>
+
+        <br />
+        <div>
+            @if (Model.ID != 0)
+            {
+                <partial name="_BotonesActualizarYRegresar" model="Model.ID" />
+            }
+            else
+            {
+                <partial name="_BotonesCrearYRegresar" />
+            }
+        </div>
+
+    </div>
+
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.getElementById("code").addEventListener('change', function () {
+            validarCodigo();
+        });
+
+        document.getElementById("type").addEventListener('change', function () {
+            validarTipoEfectivo();
+        });
+
+        document.getElementById("status").addEventListener('change', function () {
+            validarTiposActivos();
+        });
+
+        function validarCodigo() {
+            var url = '@Url.Content("~/")' + "Admin/PaymentProcessor/ValidarCodigo";
+            var id = '#id';
+            var code = '#code';
+
+            $.getJSON(url, { id: $(id).val(), code: $(code).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var code = document.getElementById("code");
+                        swal("Error", "Código ya existe", "error");
+                        code.value = "";
+                    }
+                });
+            })
+
+        }
+
+        function validarTipoEfectivo() {
+            var url = '@Url.Content("~/")' + "Admin/PaymentProcessor/ValidarTipoEfectivo";
+            var id = '#id';
+            var type = '#type';
+
+            $.getJSON(url, { id: $(id).val(), type: $(type).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var type = document.getElementById("type");
+                        swal("Error", "Ya existe procesador de tipo efectivo", "error");
+                        type.value = "";
+                    }
+                });
+            });
+        }
+
+        function validarTiposActivos() {
+            var url = '@Url.Content("~/")' + "Admin/PaymentProcessor/ValidarTiposActivos";
+            var id = '#id';
+            var status = '#status';
+            var type = '#type';
+
+            $.getJSON(url, { id: $(id).val(), status: $(status).val(), type: $(type).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var status = document.getElementById("status");
+                        swal("Error", "Ya hay otro procesador de este tipo activo", "error");
+                        status.value = false;
+                    }
+                });
+            });
+        }
+
+    </script>
+
+}
+

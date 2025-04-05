@@ -1,0 +1,22 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+<p>
+Esta aplicacion aun no tiene un enviador de correo electronico registrado.
+</p>
+    }
+    else
+    {
+<p>
+Por favor chequea tu correo electronico para confirmar la cuenta.
+</p>
+    }
+}
+

@@ -1,0 +1,112 @@
+﻿@using EFood.Utilidades
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EFood</title>
+    <link rel="shortcut icon" href="~/imagenes//icono.ico" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/EFood.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .custom-navbar {
+            margin-bottom: 0; /* Agregar margen inferior cero para eliminar espacio */
+            background: repeating-linear-gradient(45deg, #CE93D8, #9575CD); /* Púrpura Claro a Violeta */
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-navbar .nav-link {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light custom-navbar border-bottom mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/imagenes/icono.png" width="50px;" /></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        @if (User.IsInRole(DS.Role_Admin) || User.IsInRole(DS.Role_Consulta) || User.IsInRole(DS.Role_Mantenimiento) || User.IsInRole(DS.Role_Consulta) || User.IsInRole(DS.Role_Seguridad))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Administracion" asp-controller="Home" asp-action="Index">Home BackEnd</a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole(DS.Role_Admin))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    CRUDS
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="Administracion" asp-controller="Usuario" asp-action="Index">Usuarios</a></li>
+                                    <li><a class="dropdown-item" asp-area="Administracion" asp-controller="Cupon" asp-action="Index">Cupones</a></li>
+                                    <li><a class="dropdown-item" asp-area="Administracion" asp-controller="LineaComida" asp-action="Index">LineaComida</a></li>
+                                    <li><a class="dropdown-item" asp-area="Administracion" asp-controller="Producto" asp-action="Index">Productos</a></li>
+                                    <li><a class="dropdown-item" asp-area="Administracion" asp-controller="TipoTarjeta" asp-action="Index">TipoTarjeta</a></li>
+                                    <li><a class="dropdown-item" asp-area="Administracion" asp-controller="TipoPrecio" asp-action="Index">TipoPrecio</a></li>
+
+                                </ul>
+                            </li>
+                        }
+                        <li>
+                            <a asp-area="Inventario" asp-controller="Carro" asp-action="Index" class="nav-link">
+                                <i class="bi bi-cart-fill" style="color: #000000;"> Ver Carrito </i>
+                            </a>
+                        </li>
+
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div>
+        <main role="main" class="pb-3" style="background: linear-gradient(to bottom, #ffffff, #f2f2f2);">
+            <partial name="_Notificaciones" />
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - EFood - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

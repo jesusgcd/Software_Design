@@ -1,0 +1,66 @@
+﻿@model EFood.Modelos.ViewModels.NuevaTargetaVM
+@using EFood.Utilidades
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var titulo = "Asignar nueva targeta de Pago";
+}
+
+
+<form method="post" enctype="multipart/form-data">
+	<div class="border p-3">
+		<div class="row border-0">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		</div>
+
+		<input type="hidden" asp-for="procesadorPagoId" />
+
+
+		<div class="col-12 border-bottom p-0">
+			<h2 class="text-primary">@titulo</h2>
+		</div>
+
+		<div class="row">
+			<div class="col-8">
+				<div class="container">
+
+					<div class="row mb-2 mt-2">
+						<div class="form-group col-md-6">
+							<label asp-for="tipoTarjetaId"></label>
+							<select asp-for="tipoTarjetaId" asp-items="@Model.tiposTarjeta" class="form-control">
+								<option value="">-- Seleccione un tipo de Targeta --</option>
+							</select>
+							<span asp-validation-for="tipoTarjetaId" class="text-danger"></span>
+						</div>
+					</div>
+
+					<br />
+
+					<div class="d-grid gap-2 d-md-block">
+						<button type="submit" class="btn btn-primary" onfocus="false">
+							<i class="bi bi-plus-square-fill"></i> Crear
+						</button>
+						<a asp-action="AdministrarTarjetas" asp-route-id="@Model.procesadorPagoId" class="btn btn-success">
+							<i class="bi bi-arrow-return-left"></i> Regresar
+						</a>
+					</div>
+					
+
+				</div>
+
+				<div class="text-center mt-3">
+					<span asp-validation-summary="ModelOnly" class="text-danger">
+						<h2 class="text-danger">@Model.mensajeError</h2>
+					</span>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	</div>
+
+</form>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

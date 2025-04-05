@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2 class="text-primary">Precios asignados</h2>
+    </div>
+    <div class="col-lg-6">
+        <a class="btn btn-outline-primary" asp-action="Upsert"> <i class="bi bi-plus-square-fill"></i> Crear precio </a>
+        <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Product" asp-action="Index"> <i class="bi bi-arrow-left-square-fill"></i> Regresar </a>
+    </div>
+</div>
+
+<br />
+
+<div class="p-4 border rounded bg-light">
+    <table id="tblDatos" class="table table-responsive table-hover display nowrap" cellspacing="0" width="100%">
+        <thead class="table-dark">
+            <tr>
+                <th>Producto</th>
+                <th>Tamaño</th>
+                <th>Precio</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/price.js"></script>
+}
+

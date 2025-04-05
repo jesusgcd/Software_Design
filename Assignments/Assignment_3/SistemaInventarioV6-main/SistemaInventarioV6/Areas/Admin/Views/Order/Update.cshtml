@@ -1,0 +1,69 @@
+﻿@model SistemaInventarioV6.Modelos.Order
+@{
+    ViewData["Title"] = "Actualizar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+
+        <input type="hidden" asp-for="ID" id="id" />
+
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">Actualizar estado de la orden</h2>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Nombre</label>
+                <input asp-for="ClientName" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Apellido(s)</label>
+                <input asp-for="ClientSurname" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Teléfono</label>
+                <input asp-for="PhoneNumber" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Dirección</label>
+                <input asp-for="Address" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Dirección</label>
+                <input asp-for="Address" type="text" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Estado</label>
+                <select asp-for="Status" class="form-control">
+                    <option disabled selected>--Seleccione un estado--</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Procesado">Procesado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <div>
+            <partial name="_BotonesActualizarYRegresar" model="Model.ID" />
+        </div>
+
+    </div>
+
+</form>
+

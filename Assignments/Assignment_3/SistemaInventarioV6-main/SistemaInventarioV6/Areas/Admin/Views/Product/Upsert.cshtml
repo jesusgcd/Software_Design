@@ -1,0 +1,119 @@
+﻿@model SistemaInventarioV6.Modelos.ViewModels.ProductVM
+@using SistemaInventarioV6.Utilidades
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear nuevo Producto";
+}
+
+<form method="post" enctype="multipart/form-data">
+    @if (Model.Product.ID != 0)
+    {
+        titulo = "Editar Producto";
+        <input asp-for="Product.ID" hidden />
+        <input asp-for="Product.ImageURL" hidden />
+    }
+
+    <div class="border p-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <h2 class="text-info">@titulo</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Nombre</label>
+                            <input asp-for="Product.Name" class="form-control" id="name" />
+                            <span asp-validation-for="Product.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Descripción</label>
+                            <input asp-for="Product.Description" class="form-control" />
+                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Línea de comida</label>
+                            <select asp-for="Product.FoodCategoryId" asp-items="@Model.FoodCategoryList" class="form-select">
+                                <option disabled selected>--Seleccione una línea de comida--</option>
+                            </select>
+                            <span asp-validation-for="Product.FoodCategoryId" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Imagen</label>
+                            <input type="file" accept="image/png, image/gif, image/jpeg" name="files" id="imageID" class="form-control" />
+                        </div>
+                    </div>
+
+
+                    <br />
+                    <div class="d-grid gap-2 d-md-block">
+                        @if (Model.Product.ID != 0)
+                        {
+                            <partial name="_BotonesActualizarYRegresar" model="Model.Product.ID" />
+                        }
+                        else
+                        {
+                            <button type="submit" onclick="return validarImagen()" class="btn btn-primary"><i class="bi bi-plus-square-fill"></i> Crear</button>
+                            <a asp-action="Index" class="btn btn-success "><i class="bi bi-arrow-return-left"></i> Regresar</a>
+                        }
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-4">
+                @if (Model.Product.ID != 0)
+                {
+                    <img src="@DS.ImagenRuta@Model.Product.ImageURL" width="100%" style="border-radius:5px; border:1px solid #bbb" />
+                }
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function validarImagen() {
+            if (document.getElementById("imageID").value == "") {
+                swal("Error", "Seleccione una imagen", "error")
+                return false;
+            }
+            return true;
+        }
+
+        document.getElementById("name").addEventListener('change', function () {
+            validarNombre();
+        });
+
+        function validarNombre() {
+            var url = '@Url.Content("~/")' + "Admin/Product/ValidarNombre";
+            var id = '#id';
+            var name = '#name';
+
+            $.getJSON(url, { id: $(id).val(), name: $(name).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var name = document.getElementById("name");
+                        swal("Error", "Nombre ya existe", "error");
+                        name.value = "";
+                    }
+                });
+            })
+
+        }
+    </script>
+}

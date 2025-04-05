@@ -1,0 +1,99 @@
+﻿@model EFood.Modelos.Cupon
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear Cupon";
+}
+
+<form method="post">
+    <div style="padding-left:15%; padding-right:15%; padding-bottom:inherit.4rem;">
+        <div class="row border-0">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </div>
+
+        @if(Model.Id !=0)
+        {
+            // Actualizar
+            titulo = "Actualizar Cupon";
+            <input type="hidden" asp-for="Id" id="id" />
+        }
+        <div class="col-12 border-bottom p-0">
+            <h2 class="text-primary">@titulo</h2>
+        </div>
+
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Codigo</label>
+                <input type="text" asp-for="Codigo" class="form-control" placeholder="Codigo del cupon" id="codigo" />
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+            </div>
+        </div>
+         <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Descripcion</label>
+                <input type="text" asp-for="Descripcion" class="form-control" placeholder="Descripcion de la cupon" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Cantidad Disponible</label>
+                <input type="number" asp-for="CantidadDisponible" class="form-control" placeholder="Cantidad disponible" />
+                <span asp-validation-for="CantidadDisponible" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-2 mt-2">
+            <div class="form-group col-md-6">
+                <label>Porcentaje de Descuento</label>
+                <input type="number" asp-for="Descuento" class="form-control" placeholder="Porcentaje de descuento" />
+                <span asp-validation-for="Descuento" class="text-danger"></span>
+            </div>
+        </div>
+
+        <br />
+        <div>
+            @if(Model.Id !=0)
+            {
+                <partial name="_BotonesActualizarYRegresar" model="Model.Id" />
+            }
+            else
+            {
+                <partial name="_BotonesCrearYRegresar" />
+            }
+        </div>
+
+    </div>
+
+
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+   
+    <script>
+
+        document.getElementById("codigo").addEventListener('change', function () {
+            validarCodigo();
+        });
+
+        function validarCodigo()
+        {
+            var url = '@Url.Content("~/")' + "Administracion/Cupon/ValidarCodigo";
+            var id = '#id';
+            var codigo = '#codigo';
+
+            $.getJSON(url, { id: $(id).val(), codigo: $(codigo).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if(value) {
+                        var codigo = document.getElementById("codigo");
+                        swal("Error", "Codigo ya Existe", "error");
+                        codigo.value="";
+                    }
+                });
+            })
+
+        }
+    </script>
+
+}

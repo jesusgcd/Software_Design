@@ -1,0 +1,100 @@
+﻿@model SistemaInventarioV6.Modelos.ViewModels.ShoppingCartVM
+@{
+    ViewData["Title"] = "Detalles del cheque";
+}
+<form method="post">
+    <input hidden asp-for="Order.ClientName" />
+    <input hidden asp-for="Order.ClientSurname" />
+    <input hidden asp-for="Order.PhoneNumber" />
+    <input hidden asp-for="Order.Address" />
+    <input hidden asp-for="Order.PaymentMethod" />
+    <input hidden asp-for="Order.DiscountCode" />
+    <input hidden asp-for="Order.Subtotal" />
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 row">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Detalles del cheque electrónico
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-12 col-lg-6 pb-4">
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Número</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="CheckVM.CheckNumber" type="text" class="form-control" id="number" placeholder="Número del cheque" />
+                                        <span asp-validation-for="CheckVM.CheckNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Cuenta</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="CheckVM.Account" type="text" class="form-control" id="account" placeholder="Número de cuenta" />
+                                        <span asp-validation-for="CheckVM.Account" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1 justify-content-center">
+                                    <div class="col-12">
+                                        <div class="d-grid gap-2 d-md-block text-center">
+                                            <a asp-area="Cliente" asp-controller="ShoppingCart" asp-action="Continue" class="btn btn-outline-primary">Regresar</a>
+                                            <button type="submit" class="btn btn-success">Continuar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                var selectedAction = "@Url.Action("ConfirmOrder", "ShoppingCart", new { area = "Cliente" })";
+                $(this).attr('action', selectedAction);
+            });
+        });
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.getElementById("number").addEventListener('change', function () {
+            validarProcesadorCheque();
+        });
+
+        document.getElementById("account").addEventListener('change', function () {
+            validarProcesadorCheque();
+        });
+
+        function validarProcesadorCheque() {
+            var url = '@Url.Content("~/")' + "Cliente/ShoppingCart/ValidarProcesadorCheque";
+            $.getJSON(url, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var number = document.getElementById("number");
+                        var account = document.getElementById("account");
+                        swal("Error", "No hay un procesador de pago para cheques activo", "error");
+                        number.value = "";
+                        account.value = "";
+                    }
+                });
+            });
+        }
+    </script>
+}

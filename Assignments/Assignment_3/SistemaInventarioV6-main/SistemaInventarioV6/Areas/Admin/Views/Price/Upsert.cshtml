@@ -1,0 +1,106 @@
+﻿@model SistemaInventarioV6.Modelos.ViewModels.PriceVM
+@using SistemaInventarioV6.Utilidades
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var titulo = "Crear nuevo precio";
+}
+
+<form method="post">
+    @if (Model.Price.ID != 0)
+    {
+        titulo = "Editar precio";
+        <input asp-for="Price.ID" hidden />
+    }
+    <div class="border p-3">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <h2 class="text-info">@titulo</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Producto</label>
+                            <select asp-for="Price.ProductId" asp-items="@Model.ProductList" class="form-select" id="productId">
+                                <option disabled selected>--Seleccione un producto--</option>
+                            </select>
+                            <span asp-validation-for="Price.ProductId" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Tamaño</label>
+                            <select asp-for="Price.SizeId" asp-items="@Model.SizeList" class="form-select" id="sizeId">
+                                <option disabled selected>--Seleccione un tamaño--</option>
+                            </select>
+                            <span asp-validation-for="Price.SizeId" class="text-danger"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Precio</label>
+                            <input asp-for="Price.Cost" class="form-control" />
+                            <span asp-validation-for="Price.Cost" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="d-grid gap-2 d-md-block">
+                        @if (Model.Price.ID != 0)
+                        {
+                            <partial name="_BotonesActualizarYRegresar" model="Model.Price.ID" />
+                        }
+                        else
+                        {
+                            <partial name="_BotonesCrearYRegresar" />
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+
+        document.getElementById("productId").addEventListener('change', function () {
+            validarRepetidos();
+        });
+
+        document.getElementById("sizeId").addEventListener('change', function () {
+            validarRepetidos();
+        });
+
+        function validarRepetidos() {
+            var url = '@Url.Content("~/")' + "Admin/Price/ValidarRepetidos";
+            var productId = '#productId';
+            var sizeId = '#sizeId';
+
+            $.getJSON(url, { productId: $(productId).val(), sizeId: $(sizeId).val() }, function (data) {
+                $.each(data, function (key, value) {
+                    if (value) {
+                        var productId = document.getElementById("productId");
+                        var sizeId = document.getElementById("sizeId");
+                        swal("Error", "Producto ya tiene precio con ese tamaño", "error");
+                        productId.value = "--Seleccione un producto--";
+                        sizeId.value = "--Seleccione un tamaño--";
+                    }
+
+                });
+            })
+
+        }
+    </script>
+}

@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-lg-6">
+        <h2 class="text-primary">Lista de órdenes</h2>
+    </div>
+</div>
+
+<br />
+
+<div class="p-4 border rounded bg-light">
+    <table id="tblDatos" class="table table-responsive table-hover display nowrap" cellspacing="0" width="100%">
+        <thead class="table-dark">
+            <tr>
+                <th>Código</th>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Tipo de pago</th>
+                <th>Estado</th>
+                <th>Editar estado</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/orderAdmin.js"></script>
+}
+

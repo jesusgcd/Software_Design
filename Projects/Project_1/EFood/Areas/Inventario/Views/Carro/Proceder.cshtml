@@ -1,0 +1,277 @@
+﻿@model EFood.Modelos.ViewModels.CarroCompraVM
+@using EFood.Utilidades
+
+@{
+    var serializedTiposTarjeta = Json.Serialize(Model.TipoTarjetaDisponiblesLista);
+}
+
+<form method="post">
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 row">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Detalles de la Orden
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 pb-4">
+                                <div class="row">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-success">Detalles de Envío:</span>
+                                    </h4>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Nombre</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Orden.NombreCliente" type="text" class="form-control" id="nombreId" />
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Apellidos</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Orden.ApellidosCliente" type="text" class="form-control" id="apellidosId" />
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Teléfono</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Orden.TelefonoCliente" type="text" class="form-control" id="telefonoId" />
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Dirección</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Orden.Direccion" type="text" class="form-control" id="direccionId" />
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Código de descuento</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Orden.CodigoCupon" type="text" class="form-control" id="codigoCuponId" />
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-9">
+                                        <button type="submit" class="btn btn-outline-primary" asp-action="AplicarCupon">
+                                            <i class="bi bi-plus-square-fill"></i> Aplicar Cupón
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-12 col-lg-5 offset-lg-1">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-success">Productos:</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    @foreach (var item in Model.CarroCompraLista)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="my-0">@item.Producto.Descripcion</h6>
+                                                <small class="text-muted">Cantidad: @item.Cantidad</small>
+                                            </div>
+                                            <span class="text-muted">$ @(item.Precio.Monto * item.Cantidad)</span>
+                                        </li>
+                                    }
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <strong class="text-success">Total (USD)</strong>
+                                        <input type="hidden" asp-for="Orden.MontoTotal" id="MontoTotalId" />
+                                        <strong class="text-success">$@(Model.Orden.MontoTotal)</strong>
+                                    </li>
+                                </ul>
+                                <div class="row mb-2">
+                                    <div class="form-group col-md-6">
+                                        <label for="metodoPago">Método de pago:</label>
+                                        <select id="metodoPago" name="metodoPago" class="form-control" onchange="mostrarCamposPago()">
+                                            @if (Model.ProcesadorPagoEfectivo != null)
+                                            {
+                                                <option value="Efectivo">Efectivo</option>
+                                            }
+                                            @if (Model.ProcesadorPagoCheque != null)
+                                            {
+                                                <option value="Cheque">Cheque</option>
+                                            }
+                                            @if (Model.ProcesadorPagoTarjeta != null)
+                                            {
+                                                <option value="Tarjeta">Tarjeta</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="camposPagoAdicionales"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-12 col-md-8 pt-2">
+                            <p class="text-success">Fecha Estimada de Envío: @DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()</p>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <button type="submit" value="Realizar Pedido" class="btn btn-success form-control" id="procederId">Realizar Pedido</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="metodoPagoElegido" name="metodoPagoElegido" asp-for="metodoPagoElegido" />
+    <div class="col-12 p-0">
+        <h3 class="text-success text-center"><i class="bi bi-cart-check-fill"></i></h3>
+    </div>
+    <div class="col-12 p-1">
+        <div class="text-center border-0">
+            <a asp-area="Inventario" asp-controller="Carro" asp-action="Index" class="btn btn-outline-success ">Regresar al Carro</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        var tipoTarjetaDisponibles = @Html.Raw(serializedTiposTarjeta);
+
+        /*
+        function aplicarCupon() {
+            var codigoCupon = document.getElementById("codigoCuponId").value;
+            window.location.href = "/Inventario/Carro/AplicarCupon?CuponCodigo=" + codigoCupon;
+        }*/
+
+        function mostrarCamposPago() {
+            var metodoPago = document.getElementById("metodoPago").value;
+            var camposPagoAdicionales = document.getElementById("camposPagoAdicionales");
+            camposPagoAdicionales.innerHTML = '';
+
+            if (metodoPago === 'Tarjeta') {
+                var options = tipoTarjetaDisponibles.map(function (tipo) {
+                    return '<option value="' + tipo.value + '">' + tipo.text + '</option>';
+                }).join('');
+
+                camposPagoAdicionales.innerHTML = `
+                            <div class="form-group">
+                                <label for="tipoTarjeta">Tipo de Tarjeta</label>
+                                <select name="TipoTarjeta.Id" class="form-control" id="tipoTarjeta" required>
+                                    <option disabled selected>-- Seleccione un Tipo de Tarjeta --</option>
+                                    ${options}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="numeroTarjeta">Número de Tarjeta</label>
+                                <input type="number" name="numeroTarjeta" class="form-control" id="numeroTarjeta" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="cvc">CVC</label>
+                                <input type="number" name="cvc" class="form-control" id="cvc" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="mesVencimiento">Mes de Vencimiento</label>
+                                <input type="number" name="mesVencimiento" class="form-control" id="mesVencimiento" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="anoVencimiento">Año de Vencimiento</label>
+                                <input type="number" name="anoVencimiento" class="form-control" id="anoVencimiento" required />
+                            </div>
+                        `;
+            } else if (metodoPago === 'Cheque') {
+                camposPagoAdicionales.innerHTML = `
+                                    <div class="form-group">
+                                        <label for="numeroCheque">Número de Cheque</label>
+                                        <input type="text" name="numeroCheque" class="form-control" id="numeroCheque" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cuentaCheque">Número de Cuenta</label>
+                                        <input type="text" name="cuentaCheque" class="form-control" id="cuentaCheque" required />
+                                    </div>
+                                `;
+            }
+        }
+
+        $("#procederId").click(function (event) {
+            let nombreId = document.getElementById("nombreId").value;
+            let apellidosId = document.getElementById("apellidosId").value;
+            let telefonoId = document.getElementById("telefonoId").value;
+            let direccionId = document.getElementById("direccionId").value;
+            let metodoPago = document.getElementById("metodoPago").value;
+
+
+            if (nombreId == '') {
+                swal("Error", "Ingresar Nombre", "error");
+                return false;
+            }
+            if (apellidosId == '') {
+                swal("Error", "Ingresar Apellidos", "error");
+                return false;
+            }
+            if (telefonoId == '') {
+                swal("Error", "Ingresar Telefono", "error");
+                return false;
+            }
+            if (direccionId == '') {
+                swal("Error", "Ingresar Direccion", "error");
+                return false;
+            }
+
+            // Setear el método de pago elegido
+            document.getElementById("metodoPagoElegido").value = metodoPago;
+
+            if (metodoPago === 'Tarjeta') {
+                let tipoTarjeta = document.getElementById("tipoTarjeta").value;
+                let numeroTarjeta = document.getElementById("numeroTarjeta").value;
+                let cvc = document.getElementById("cvc").value;
+                let mesVencimiento = document.getElementById("mesVencimiento").value;
+                let anoVencimiento = document.getElementById("anoVencimiento").value;
+
+                if (tipoTarjeta == '' || tipoTarjeta == "-- Seleccione un Tipo de Tarjeta --"  || numeroTarjeta == '' || cvc == '' || mesVencimiento == '' || anoVencimiento == '') {
+                    swal("Error", "Completar todos los campos de la tarjeta", "error");
+                    return false;
+                }
+                if (numeroTarjeta <= 0 || numeroTarjeta.toString().length > 16) {
+                    swal("Error", "Número de tarjeta invalido", "error");
+                    return false;
+                }
+
+                if (cvc < 0 || cvc > 999) {
+                    swal("Error", "CVC invalido", "error");
+                    return false;
+                }
+
+                if (mesVencimiento < 1 || mesVencimiento > 12) {
+                    swal("Error", "Mes de vencimiento invalido", "error");
+                    return false;
+                }
+
+                if (anoVencimiento <= 2023) {
+                    swal("Error", "Año de vencimiento invalido", "error");
+                    return false;
+                }
+            }
+
+            if (metodoPago === 'Cheque') {
+                let numeroCheque = document.getElementById("numeroCheque").value;
+                let cuentaCheque = document.getElementById("cuentaCheque").value;
+
+                if (numeroCheque == '' || cuentaCheque == '') {
+                    swal("Error", "Completar todos los campos del cheque", "error");
+                    return false;
+                }
+            }
+        });
+    </script>
+}

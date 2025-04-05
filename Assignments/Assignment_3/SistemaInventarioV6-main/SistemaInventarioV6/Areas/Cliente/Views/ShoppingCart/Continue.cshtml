@@ -1,0 +1,142 @@
+﻿@model SistemaInventarioV6.Modelos.ViewModels.ShoppingCartVM
+@{
+    ViewData["Title"] = "Detalles Orden";
+}
+<form method="post">
+    <input hidden asp-for="Order.Subtotal" />
+    <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container">
+            <div class="card">
+                <div class="card-header bg-dark text-light ml-0 row">
+                    <div class="col-6">
+                        <i class="fa fa-shopping-cart"></i> &nbsp;
+                        Detalles de la Orden
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 pb-4">
+                                <div class="row">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-success">Información del cliente:</span>
+                                    </h4>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Nombre</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Order.ClientName" type="text" class="form-control" placeholder="Indique su nombre"/>
+                                        <span asp-validation-for="Order.ClientName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Apellido(s)</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Order.ClientSurname" type="text" class="form-control" placeholder="Indique su(s) apellido(s)" />
+                                        <span asp-validation-for="Order.ClientSurname" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Teléfono</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Order.PhoneNumber" type="text" class="form-control" placeholder="Indique su número telefónico" />
+                                        <span asp-validation-for="Order.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Dirección</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Order.Address" type="text" class="form-control" placeholder="Escriba la dirección de envío" />
+                                        <span asp-validation-for="Order.Address" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Método de pago</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <select asp-for="Order.PaymentMethod" class="form-control" id="method">
+                                            <option disabled selected>--Seleccione forma de pago--</option>
+                                            <option value="Tarjeta" data-action="@Url.Action("CardDetails", "ShoppingCart", new { area = "Cliente" })">Tarjeta de crédito o débito</option>
+                                            <option value="Cheque" data-action="@Url.Action("CheckDetails", "ShoppingCart", new { area = "Cliente" })">Cheque electrónico</option>
+                                            <option value="Efectivo" data-action="@Url.Action("ConfirmOrder", "ShoppingCart", new { area = "Cliente" })">Efectivo</option>
+                                        </select>
+                                        <span asp-validation-for="Order.PaymentMethod" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">
+                                        <label>Código de descuento</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input asp-for="Order.DiscountCode" type="text" class="form-control" placeholder="(Opcional) Código de tiquete de descuento" id="code" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-5 offset-lg-1">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-success">Productos:</span>
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    @foreach (var item in Model.ShoppingCartList)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <div>
+                                                <h6 class="my-0">@item.Product.Description</h6>
+                                                <small class="text-muted">Cantidad: @item.Quantity</small>
+                                            </div>
+                                            <span class="text-muted">₡ @(item.Price.Cost * item.Quantity)</span>
+                                        </li>
+                                    }
+
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <strong class="text-success">Subtotal:</strong>
+                                        <strong class="text-success">₡@(Model.Order.Subtotal)</strong>
+                                    </li>
+
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <div class="col-12 col-md-4">
+                                            <button type="submit"  class="btn btn-success form-control" style="width: 400px;">Continuar</button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 p-1">
+        <div class="text-center border-0">
+            <a asp-area="Cliente" asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-primary">Regresar al carrito</a>
+        </div>
+
+    </div>
+</form>
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                var selectedAction = $('#method option:selected').data('action');
+
+                if (selectedAction) {
+                    $(this).attr('action', selectedAction);
+                }
+            });
+        });
+
+    </script>
+}
